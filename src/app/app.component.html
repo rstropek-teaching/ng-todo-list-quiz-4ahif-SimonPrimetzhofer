@@ -1,8 +1,8 @@
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="load($event)">
 
   <mat-tab>
     <ng-template mat-tab-label>
-      <span (click)="loadPersons()">Show people</span>
+      <span>Show people</span>
     </ng-template>
 
     <table class="w3-table-all" *ngIf="hidePeople===false">
@@ -19,7 +19,7 @@
 
   <mat-tab>
     <ng-template mat-tab-label>
-      <span (click)="loadTodos()">Show todos</span>
+      <span>Show todos</span>
     </ng-template>
 
     <div class="w3-row w3-margin">
@@ -75,12 +75,14 @@
         <th>Description</th>
         <th>Person</th>
         <th>Done</th>
+        <th>Delete</th>
       </thead>
       <tbody>
         <tr *ngFor="let item of todos | async">
           <td>{{item.description}}</td>
           <td>{{item.assignedTo}}</td>
           <td><mat-checkbox [checked]="item.done" (change)="setDone(item.id,item.done)">&nbsp;</mat-checkbox></td>
+          <td><button class="w3-button w3-border" (click)="deleteTodo(item.id)">Delete</button></td>
         </tr>
       </tbody>
     </table>
