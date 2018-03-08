@@ -22,6 +22,20 @@
       <span (click)="loadTodos()">Show todos</span>
     </ng-template>
 
+    <div class="w3-row w3-margin">
+      <mat-checkbox class="w3-third">
+        Show undone todos
+      </mat-checkbox>
+      <mat-checkbox (change)="showNameInput=!showNameInput" class="w3-third">
+        Show todos per person
+      </mat-checkbox>
+      <form class="w3-form" class="w3-third" *ngIf="showNameInput===true">
+        <mat-form-field>
+          <input matInput placeholder="Type your name"/>
+        </mat-form-field>
+      </form>
+    </div>
+
     <table class="w3-table-all" *ngIf="hideTodos===false">
       <thead class="w3-light-grey">
         <th>Description</th>
@@ -32,7 +46,7 @@
         <tr *ngFor="let item of todos | async">
           <td>{{item.description}}</td>
           <td>{{item.assignedTo}}</td>
-          <td><mat-checkbox (change)="setDone(item.id,item.done)">&nbsp;</mat-checkbox></td>
+          <td><mat-checkbox [checked]="item.done" (change)="setDone(item.id,item.done)">&nbsp;</mat-checkbox></td>
         </tr>
       </tbody>
     </table>
@@ -43,4 +57,5 @@
       <span>Currently selected: {{headline}}</span>
     </ng-template>
   </mat-tab>
+  
 </mat-tab-group>

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatTableModule} from '@angular/material';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatInputModule} from '@angular/material/input';
 
 interface ITodoItem{
   id:number;
@@ -31,8 +31,10 @@ export class AppComponent {
   public todos:Observable<ITodoItem[]>;
 
   headline:string="Please select an option";
-  hidePeople=true;
-  hideTodos=true;
+  hidePeople:boolean=true;
+  hideTodos:boolean=true;
+
+  showNameInput:boolean=false;
 
   //Inject http client for usage
   constructor(private httpClient: HttpClient){
@@ -58,8 +60,8 @@ export class AppComponent {
   //Set a todo item done
   setDone(id:number,flag:boolean){
     this.http.patch(this.apiURL+"todos/"+id,{
-      done: !flag
-    });
+      "done": !flag
+    }).subscribe();
   }
 
 }
