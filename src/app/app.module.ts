@@ -27,7 +27,7 @@ import { AppComponent } from './app.component';
     MatInputModule,
     FormsModule,
     MatSelectModule,
-    MatDatepickerModule
+    MatDatepickerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

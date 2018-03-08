@@ -10,7 +10,7 @@
         <th>Name</th>
       </thead>
       <tbody>
-        <tr *ngFor="let person of people | async">
+        <tr *ngFor="let person of people">
           <td>{{person.name}}</td>
         </tr>
       </tbody>
@@ -23,7 +23,7 @@
     </ng-template>
 
     <div class="w3-row w3-margin">
-      <mat-checkbox class="w3-half">
+      <mat-checkbox [checked]="showOnlyUndone" (change)="showOnlyUndone=!showOnlyUndone;setUndoneFilter()" class="w3-half">
         Show undone todos
       </mat-checkbox>
       <div class="w3-half">
@@ -32,7 +32,11 @@
         </mat-checkbox>
         <form class="w3-form" class="w3-display-bottom" *ngIf="showNameInput===true">
           <mat-form-field>
-            <input matInput placeholder="Type your name"/>
+            <mat-select [(value)]="selectedPerson" placeholder="Choose person">
+              <mat-option *ngFor="let person of people" [value]="person.name">
+                {{person.name}}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </form>
       </div>
@@ -56,7 +60,7 @@
                 <mat-form-field>
                   <mat-select [(value)]="selectedPerson" placeholder="Choose person">
                     <mat-option value="Nobody">Nobody</mat-option>
-                    <mat-option *ngFor="let person of people | async" [value]="person.name">
+                    <mat-option *ngFor="let person of people" [value]="person.name">
                       {{person.name}}
                     </mat-option>
                   </mat-select>
@@ -78,7 +82,7 @@
         <th>Delete</th>
       </thead>
       <tbody>
-        <tr *ngFor="let item of todos | async">
+        <tr *ngFor="let item of todos">
           <td>{{item.description}}</td>
           <td>{{item.assignedTo}}</td>
           <td><mat-checkbox [checked]="item.done" (change)="setDone(item.id,item.done)">&nbsp;</mat-checkbox></td>

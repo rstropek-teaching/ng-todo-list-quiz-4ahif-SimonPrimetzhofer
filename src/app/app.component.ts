@@ -30,18 +30,22 @@ export class AppComponent {
   private http:HttpClient;
   public apiURL="http://localhost:8081/api/";
   
-  public people:Observable<IPerson[]>;
-  public todos:Observable<ITodoItem[]>;
+  public people:IPerson[];
+  public todos:ITodoItem[];
 
   headline:string="Please select an option";
   hidePeople:boolean=true;
   hideTodos:boolean=true;
 
-  showNameInput:boolean=false;
+  //Filter variables
+  showOnlyUndone:boolean=false;
   
   //Variables for inserting a new todo item
   newDescription:string="";
   selectedPerson:string="";
+
+  //Name filter
+  showNameInput:boolean=false;
 
   //Inject http client for usage
   constructor(private httpClient: HttpClient){
@@ -61,14 +65,18 @@ export class AppComponent {
   //Load persons from api and display those
   loadPersons () {
     this.headline="People";
-    this.people=this.http.get<IPerson[]>(this.apiURL+"people");
+    this.http.get<IPerson[]>(this.apiURL+"people").subscribe( allPeople => {
+      this.people=allPeople;
+    });
     this.hideTodos=true;
     this.hidePeople=false;
   }
   //Load todos from api and display those
   loadTodos(){
     this.headline="Todos"
-    this.todos=this.http.get<ITodoItem[]>(this.apiURL+"todos");
+    this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(allTodos => {
+      this.todos=allTodos;
+    });
     this.hidePeople=true;
     this.hideTodos=false;
   }
@@ -86,7 +94,7 @@ export class AppComponent {
     let data:any = {};
     this.http.post(this.apiURL+"todos",{
       "description" : this.newDescription,
-      "assignedTo" : this.selectedPerson
+      "assignedTo" : this.selectedPerson,
     }).subscribe();
     this.newDescription="";
     this.selectedPerson="";
@@ -98,7 +106,21 @@ export class AppComponent {
   }
 
   //Gets undone todos into todo list
-  getUndoneTodos(){
-    this.todos=this.http.get<ITodoItem[]>(this.apiURL+"todos");
+  setUndoneFilter(){
+    if(!this.showOnlyUndone)
+      this.loadTodos();
+    else{
+      //Clear array
+      this.todos.splice(0,this.todos.length);
+
+      //Filter undone todos
+      this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(todoItems => {
+        for(const todoItem of todoItems){
+          //A todoitem is undone, when the done flag is not set or it is marked as false
+          if(todoItem.done === undefined ||todoItem.done===false)
+            this.todos.push(todoItem);
+        }
+      });
+    }
   }
 }
