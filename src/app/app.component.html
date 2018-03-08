@@ -27,12 +27,13 @@
         Show undone todos
       </mat-checkbox>
       <div class="w3-half">
-        <mat-checkbox (change)="showNameInput=!showNameInput" class="w3-display-top">
+        <mat-checkbox (change)="showNameInput=!showNameInput; loadTodos();" class="w3-display-top">
           Show todos per person
         </mat-checkbox>
         <form class="w3-form" class="w3-display-bottom" *ngIf="showNameInput===true">
           <mat-form-field>
-            <mat-select [(value)]="selectedPerson" placeholder="Choose person">
+            <mat-select (selectionChange)="setNameFilter()" [(value)]="showOnlyPerson" placeholder="Choose person">
+              <mat-option value="Nobody">Nobody</mat-option>
               <mat-option *ngFor="let person of people" [value]="person.name">
                 {{person.name}}
               </mat-option>

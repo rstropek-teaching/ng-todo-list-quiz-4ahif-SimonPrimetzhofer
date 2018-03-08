@@ -39,6 +39,7 @@ export class AppComponent {
 
   //Filter variables
   showOnlyUndone:boolean=false;
+  showOnlyPerson:string="";
   
   //Variables for inserting a new todo item
   newDescription:string="";
@@ -95,14 +96,18 @@ export class AppComponent {
     this.http.post(this.apiURL+"todos",{
       "description" : this.newDescription,
       "assignedTo" : this.selectedPerson,
-    }).subscribe();
+    }).subscribe(() => {
+      this.loadTodos();
+    });
     this.newDescription="";
     this.selectedPerson="";
   }
 
   //Delete a todo item
   deleteTodo(id:number){
-    this.http.delete(this.apiURL+"todos/"+id).subscribe();
+    this.http.delete(this.apiURL+"todos/"+id).subscribe(() => {
+      this.loadTodos();
+    });
   }
 
   //Gets undone todos into todo list
@@ -117,7 +122,20 @@ export class AppComponent {
       this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(todoItems => {
         for(const todoItem of todoItems){
           //A todoitem is undone, when the done flag is not set or it is marked as false
-          if(todoItem.done === undefined ||todoItem.done===false)
+          if(todoItem.done === undefined || todoItem.done===false)
+            this.todos.push(todoItem);
+        }
+      });
+    }
+  }
+  setNameFilter(){
+    if(!this.showOnlyPerson)
+      this.loadTodos();
+    else{
+      this.todos.splice(0,this.todos.length);
+      this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(todoItems => {
+        for(const todoItem of todoItems){
+          if(todoItem.assignedTo!==undefined && todoItem.assignedTo===this.showOnlyPerson)
             this.todos.push(todoItem);
         }
       });
