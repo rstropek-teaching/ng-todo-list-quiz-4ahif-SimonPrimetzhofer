@@ -6,6 +6,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatInputModule} from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
 
 interface ITodoItem{
   id:number;
@@ -35,6 +37,10 @@ export class AppComponent {
   hideTodos:boolean=true;
 
   showNameInput:boolean=false;
+  
+  //Variables for inserting a new todo item
+  newDescription:string="";
+  selectedPerson:string="";
 
   //Inject http client for usage
   constructor(private httpClient: HttpClient){
@@ -62,6 +68,16 @@ export class AppComponent {
     this.http.patch(this.apiURL+"todos/"+id,{
       "done": !flag
     }).subscribe();
+  }
+
+  addTodo(){
+    let data:any = {};
+    this.http.post(this.apiURL+"todos",{
+      "description" : this.newDescription,
+      "assignedTo" : this.selectedPerson
+    }).subscribe();
+    this.newDescription="";
+    this.selectedPerson="";
   }
 
 }

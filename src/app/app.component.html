@@ -23,18 +23,52 @@
     </ng-template>
 
     <div class="w3-row w3-margin">
-      <mat-checkbox class="w3-third">
+      <mat-checkbox class="w3-half">
         Show undone todos
       </mat-checkbox>
-      <mat-checkbox (change)="showNameInput=!showNameInput" class="w3-third">
-        Show todos per person
-      </mat-checkbox>
-      <form class="w3-form" class="w3-third" *ngIf="showNameInput===true">
-        <mat-form-field>
-          <input matInput placeholder="Type your name"/>
-        </mat-form-field>
-      </form>
+      <div class="w3-half">
+        <mat-checkbox (change)="showNameInput=!showNameInput" class="w3-display-top">
+          Show todos per person
+        </mat-checkbox>
+        <form class="w3-form" class="w3-display-bottom" *ngIf="showNameInput===true">
+          <mat-form-field>
+            <input matInput placeholder="Type your name"/>
+          </mat-form-field>
+        </form>
+      </div>
     </div>
+
+    <div class="w3-container w3-margin">
+        <button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-dark-grey">Add todo item</button>
+      
+        <div id="id01" class="w3-modal">
+          <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+            
+            <div class="w3-center"><br>
+              <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>
+            </div>
+      
+            <form class="w3-container">
+              <div class="w3-section">
+                <label><b>Description</b></label>
+                <input name="descInput" class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter the description of the todo item" [(ngModel)]="newDescription" required>
+                
+                <mat-form-field>
+                  <mat-select [(value)]="selectedPerson" placeholder="Choose person">
+                    <mat-option value="Nobody">Nobody</mat-option>
+                    <mat-option *ngFor="let person of people | async" [value]="person.name">
+                      {{person.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-block w3-dark-grey w3-section w3-padding" (click)="addTodo()">Send</button>
+              </div>
+            </form>
+      
+          </div>
+        </div>
+      </div>
 
     <table class="w3-table-all" *ngIf="hideTodos===false">
       <thead class="w3-light-grey">
