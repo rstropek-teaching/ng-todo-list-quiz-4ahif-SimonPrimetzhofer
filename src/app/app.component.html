@@ -23,11 +23,11 @@
     </ng-template>
 
     <div class="w3-row w3-margin">
-      <mat-checkbox [checked]="showOnlyUndone" (change)="showOnlyUndone=!showOnlyUndone;setUndoneFilter()" class="w3-half">
+      <mat-checkbox [checked]="showOnlyUndone" (change)="showOnlyUndone=!showOnlyUndone;setUndoneFilter();undoneCheckboxState()" class="w3-half">
         Show undone todos
       </mat-checkbox>
       <div class="w3-half">
-        <mat-checkbox (change)="showNameInput=!showNameInput; loadTodos();" class="w3-display-top">
+        <mat-checkbox (change)="showOnlyPerson='';showNameInput=!showNameInput;personCheckboxState()" class="w3-display-top">
           Show todos per person
         </mat-checkbox>
         <form class="w3-form" class="w3-display-bottom" *ngIf="showNameInput===true">

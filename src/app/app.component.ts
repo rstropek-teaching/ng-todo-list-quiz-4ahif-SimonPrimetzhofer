@@ -119,6 +119,9 @@ export class AppComponent {
     if(!this.showOnlyUndone)
       this.loadTodos();
     else{
+      let nameFilter:boolean=false;
+      if(this.showOnlyPerson!=="")
+        nameFilter=true;
       //Clear array
       this.todos.splice(0,this.todos.length);
 
@@ -127,7 +130,10 @@ export class AppComponent {
         for(const todoItem of todoItems){
           //A todoitem is undone, when the done flag is not set or it is marked as false
           if(todoItem.done === undefined || todoItem.done===false)
-            this.todos.push(todoItem);
+            if(nameFilter===true){
+              if(todoItem.assignedTo!==""&&todoItem.assignedTo===this.showOnlyPerson)
+                this.todos.push(todoItem);
+            }else this.todos.push(todoItem);
         }
       });
     }
@@ -136,11 +142,20 @@ export class AppComponent {
     if(!this.showOnlyPerson)
       this.loadTodos();
     else{
+      let doneFilter:boolean=false;
+      if(this.showOnlyUndone===true)
+        doneFilter=true;
       this.todos.splice(0,this.todos.length);
       this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(todoItems => {
         for(const todoItem of todoItems){
-          if(todoItem.assignedTo!==undefined && todoItem.assignedTo===this.showOnlyPerson)
-            this.todos.push(todoItem);
+          if(todoItem.assignedTo!==undefined && todoItem.assignedTo===this.showOnlyPerson){
+            //Done filter should be applied as well
+            if(doneFilter===true){
+              if(todoItem.done===undefined || todoItem.done===false)
+                this.todos.push(todoItem);
+            }else this.todos.push(todoItem);
+          } 
+            
         }
       });
     }
@@ -154,5 +169,20 @@ export class AppComponent {
         this.loadTodos();
       });
     }
+  }
+  //Get state of Person checkbox
+  personCheckboxState(){
+    if(this.showOnlyPerson===""&&this.showOnlyUndone===false)
+      this.loadTodos();
+    else if(this.showOnlyUndone===true)
+      this.setUndoneFilter();
+
+  }
+  //Get state of undone checkbox
+  undoneCheckboxState(){
+    if(this.showOnlyUndone===false&&this.showOnlyPerson==="")
+      this.loadTodos();
+    else if(this.showOnlyPerson!=="")
+      this.setNameFilter();
   }
 }
