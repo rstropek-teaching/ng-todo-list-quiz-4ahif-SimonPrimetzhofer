@@ -61,10 +61,14 @@ export class AppComponent {
 
   //Check, which tab is selected
   load(tabChangeEvent:MatTabChangeEvent){
+    
     if(tabChangeEvent.index===0)
       this.loadPersons();
-    else if(tabChangeEvent.index===1)
+    else if(tabChangeEvent.index===1){
+      this.showOnlyPerson="";
+      this.showOnlyUndone=false;
       this.loadTodos();
+    }
   }
 
   //Load persons from api and display those
@@ -114,52 +118,47 @@ export class AppComponent {
     });
   }
 
-  //Gets undone todos into todo list
+  //Filter methods
   setUndoneFilter(){
-    if(!this.showOnlyUndone)
-      this.loadTodos();
-    else{
-      let nameFilter:boolean=false;
-      if(this.showOnlyPerson!=="")
-        nameFilter=true;
+    if(this.showOnlyPerson!==""&&this.showOnlyUndone===true)
+      this.setBothFilters();
+    else if(this.showOnlyUndone===true){
       //Clear array
       this.todos.splice(0,this.todos.length);
-
       //Filter undone todos
       this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(todoItems => {
         for(const todoItem of todoItems){
           //A todoitem is undone, when the done flag is not set or it is marked as false
           if(todoItem.done === undefined || todoItem.done===false)
-            if(nameFilter===true){
-              if(todoItem.assignedTo!==""&&todoItem.assignedTo===this.showOnlyPerson)
-                this.todos.push(todoItem);
-            }else this.todos.push(todoItem);
+            this.todos.push(todoItem);
         }
       });
     }
   }
   setNameFilter(){
-    if(!this.showOnlyPerson)
-      this.loadTodos();
-    else{
-      let doneFilter:boolean=false;
-      if(this.showOnlyUndone===true)
-        doneFilter=true;
+    if(this.showOnlyPerson!==""&&this.showOnlyUndone===true)
+      this.setBothFilters();
+    else if(this.showOnlyPerson!==""){
       this.todos.splice(0,this.todos.length);
       this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(todoItems => {
         for(const todoItem of todoItems){
-          if(todoItem.assignedTo!==undefined && todoItem.assignedTo===this.showOnlyPerson){
-            //Done filter should be applied as well
-            if(doneFilter===true){
-              if(todoItem.done===undefined || todoItem.done===false)
-                this.todos.push(todoItem);
-            }else this.todos.push(todoItem);
+          if(todoItem.assignedTo===this.showOnlyPerson){
+            this.todos.push(todoItem);
           } 
-            
         }
       });
     }
   }
+  setBothFilters(){
+    this.todos.splice(0,this.todos.length);
+    this.http.get<ITodoItem[]>(this.apiURL+"todos").subscribe(todoItems => {
+      for(const todoItem of todoItems){
+        if(todoItem.assignedTo===this.showOnlyPerson&&(todoItem.done===false||todoItem.done===undefined))
+          this.todos.push(todoItem);
+      }
+    });
+  }
+
   //Updates the description of a todo item
   updateTodoDescription(id:number){
     if(id&&this.updatedDescription&&this.updatedDescription.length>0){
@@ -174,15 +173,15 @@ export class AppComponent {
   personCheckboxState(){
     if(this.showOnlyPerson===""&&this.showOnlyUndone===false)
       this.loadTodos();
-    else if(this.showOnlyUndone===true)
+    else if(this.showOnlyUndone===true&&this.showOnlyPerson===""){
       this.setUndoneFilter();
-
+    }
   }
   //Get state of undone checkbox
   undoneCheckboxState(){
     if(this.showOnlyUndone===false&&this.showOnlyPerson==="")
       this.loadTodos();
-    else if(this.showOnlyPerson!=="")
+    else if(this.showOnlyPerson!==""&&this.showOnlyUndone===false)
       this.setNameFilter();
   }
 }
