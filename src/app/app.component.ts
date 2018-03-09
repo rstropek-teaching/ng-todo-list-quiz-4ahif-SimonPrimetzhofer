@@ -48,6 +48,10 @@ export class AppComponent {
   //Name filter
   showNameInput:boolean=false;
 
+  //Update variables
+  update:boolean=false;
+  updatedDescription:string="";
+
   //Inject http client for usage
   constructor(private httpClient: HttpClient){
     this.http=httpClient;
@@ -138,6 +142,16 @@ export class AppComponent {
           if(todoItem.assignedTo!==undefined && todoItem.assignedTo===this.showOnlyPerson)
             this.todos.push(todoItem);
         }
+      });
+    }
+  }
+  //Updates the description of a todo item
+  updateTodoDescription(id:number){
+    if(id&&this.updatedDescription&&this.updatedDescription.length>0){
+      this.http.patch(this.apiURL+"todos/"+id,{
+        "description" : this.updatedDescription
+      }).subscribe(() => {
+        this.loadTodos();
       });
     }
   }

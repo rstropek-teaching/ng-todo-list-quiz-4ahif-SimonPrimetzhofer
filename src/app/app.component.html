@@ -75,22 +75,25 @@
         </div>
       </div>
 
-    <table class="w3-table-all" *ngIf="hideTodos===false">
-      <thead class="w3-light-grey">
-        <th>Description</th>
-        <th>Person</th>
-        <th>Done</th>
-        <th>Delete</th>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of todos">
-          <td>{{item.description}}</td>
-          <td>{{item.assignedTo}}</td>
-          <td><mat-checkbox [checked]="item.done" (change)="setDone(item.id,item.done)">&nbsp;</mat-checkbox></td>
-          <td><button class="w3-button w3-border" (click)="deleteTodo(item.id)">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <form class="w3-container">
+      <table class="w3-table-all" *ngIf="hideTodos===false">
+        <thead class="w3-light-grey">
+          <th>Description</th>
+          <th>Person</th>
+          <th>Done</th>
+          <th>Delete</th>
+        </thead>
+        <tbody>
+          <!-- Double click to edit -->
+          <tr *ngFor="let item of todos">
+            <td><input class="w3-input" type="text" (blur)="update=false;updateTodoDescription(item.id)" (dblclick)="update=true;" [value]="item.description" [readOnly]="!update"/></td>
+            <td>{{item.assignedTo}}</td>
+            <td><mat-checkbox [checked]="item.done" (change)="setDone(item.id,item.done)">&nbsp;</mat-checkbox></td>
+            <td><button class="w3-button w3-border" (click)="deleteTodo(item.id)">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
   </mat-tab>
 
   <mat-tab [disabled]="true">
