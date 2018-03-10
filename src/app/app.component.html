@@ -86,8 +86,18 @@
         <tbody>
           <!-- Double click to edit -->
           <tr *ngFor="let item of todos">
-            <td><input class="w3-input" type="text" (blur)="update=false;updateTodoDescription(item.id)" (dblclick)="update=true;" [value]="item.description" [readOnly]="!update"/></td>
-            <td>{{item.assignedTo}}</td>
+            <td><input class="w3-input" type="text" [id]="'descId'+item.id" (blur)="update=false;updateTodoDescription(item.id);" (dblclick)="update=true;" [value]="item.description"  [readOnly]="!update"/></td>
+            <td>
+              <mat-form-field>
+                <mat-select placeholder="Edit person" [value]="item.assignedTo" (selectionChange)="updateTodoAssignedTo($event.value,item.id);">
+                  <mat-option value="Nobody">Nobody</mat-option>
+                  <mat-option *ngFor="let person of people" [value]="person.name">
+                    {{person.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+            </td>
             <td><mat-checkbox [checked]="item.done" (change)="setDone(item.id,item.done)">&nbsp;</mat-checkbox></td>
             <td><button class="w3-button w3-border" (click)="deleteTodo(item.id)">Delete</button></td>
           </tr>

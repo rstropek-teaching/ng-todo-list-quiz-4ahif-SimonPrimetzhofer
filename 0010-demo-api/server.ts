@@ -103,7 +103,7 @@ router.patch('/api/todos/:id', async (context) => {
   // Update assigned-to if specified
   if (body.assignedTo) {
     // Check if assigned-to person exists
-    if (people.find(p => p.name === body.assignedTo)) {
+    if (people.find(p => p.name === body.assignedTo) || body.assignedTo==="Nobody") {
       todoItem.assignedTo = body.assignedTo;
     } else {
       context.status = NOT_FOUND;

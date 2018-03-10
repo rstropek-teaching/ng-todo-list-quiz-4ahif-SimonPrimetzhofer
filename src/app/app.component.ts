@@ -50,7 +50,6 @@ export class AppComponent {
 
   //Update variables
   update:boolean=false;
-  updatedDescription:string="";
 
   //Inject http client for usage
   constructor(private httpClient: HttpClient){
@@ -161,14 +160,27 @@ export class AppComponent {
 
   //Updates the description of a todo item
   updateTodoDescription(id:number){
-    if(id&&this.updatedDescription&&this.updatedDescription.length>0){
+    const updatedDescription=(<HTMLInputElement>document.getElementById("descId"+id)).value;
+    if(updatedDescription.length>0){
       this.http.patch(this.apiURL+"todos/"+id,{
-        "description" : this.updatedDescription
+        "description" : updatedDescription
       }).subscribe(() => {
         this.loadTodos();
       });
     }
   }
+  //Updated person to which the todo item is assigned tos
+  updateTodoAssignedTo(data:string,id:number){
+    const updatedAssignedTo=data;
+    if(updatedAssignedTo.length>0){
+      this.http.patch(this.apiURL+"todos/"+id,{
+        "assignedTo" : updatedAssignedTo
+      }).subscribe(() => {
+        this.loadTodos();
+      });
+    }
+  }
+
   //Get state of Person checkbox
   personCheckboxState(){
     if(this.showOnlyPerson===""&&this.showOnlyUndone===false)
