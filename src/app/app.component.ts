@@ -33,6 +33,8 @@ export class AppComponent {
   public people:IPerson[];
   public todos:ITodoItem[];
 
+  // Note RS: Avoid string constants in TypeScript
+  // Note RS: Generally, no need for types if you assign a constant (implicit typing)
   headline:string="Please select an option";
   hidePeople:boolean=true;
   hideTodos:boolean=true;
@@ -99,6 +101,9 @@ export class AppComponent {
     //I had to change the api, because in demo.http, "Nobody" was needed as assignedTo, when there is no
     //person yet for the todo-item, so I added a few lines of code, to make this possible
     //Sooner, a todo item could only be added to an existing person in the api
+    
+    // Note RS: That's not correct. You could create a todo item without an assignment. You just had to no set
+    // the `assignedTo` field (falsy).
     let data:any = {};
     this.http.post(this.apiURL+"todos",{
       "description" : this.newDescription,
@@ -119,6 +124,7 @@ export class AppComponent {
 
   //Filter methods
   setUndoneFilter(){
+    // Note RS: Please format the code. Like this, it is really hard to read
     if(this.showOnlyPerson!==""&&this.showOnlyUndone===true)
       this.setBothFilters();
     else if(this.showOnlyUndone===true){
