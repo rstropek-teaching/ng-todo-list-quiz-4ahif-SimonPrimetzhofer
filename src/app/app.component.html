@@ -90,7 +90,6 @@
             <td>
               <mat-form-field>
                 <mat-select placeholder="Edit person" [value]="item.assignedTo" (selectionChange)="updateTodoAssignedTo($event.value,item.id);">
-                  <mat-option value="Nobody">Nobody</mat-option>
                   <mat-option *ngFor="let person of people" [value]="person.name">
                     {{person.name}}
                   </mat-option>

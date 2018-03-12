@@ -64,8 +64,6 @@ router.post('/api/todos', async (context) => {
   if (body.assignedTo) {
     if (people.find(p => p.name === body.assignedTo)) {
       newItem.assignedTo = body.assignedTo;
-    }else if(body.assignedTo==="Nobody"){//Nobody is selected when there is no real user selected yet
-      newItem.assignedTo=body.assignedTo;
     } else {
       context.status = NOT_FOUND;
       context.body = {description: 'Unknown person'};
@@ -103,7 +101,7 @@ router.patch('/api/todos/:id', async (context) => {
   // Update assigned-to if specified
   if (body.assignedTo) {
     // Check if assigned-to person exists
-    if (people.find(p => p.name === body.assignedTo) || body.assignedTo==="Nobody") {
+    if (people.find(p => p.name === body.assignedTo) ) {
       todoItem.assignedTo = body.assignedTo;
     } else {
       context.status = NOT_FOUND;
